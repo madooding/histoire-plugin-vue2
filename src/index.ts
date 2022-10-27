@@ -29,6 +29,7 @@ export function HstVue (): Plugin {
 type Vue2StorySetupReturn = Record<string, any> | void
 
 export type Vue2StorySetupHandler = (payload: {
+  app?: Vue
   story?: Story
   variant?: Variant
 }) => Promise<Vue2StorySetupReturn> | Vue2StorySetupReturn

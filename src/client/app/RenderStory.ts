@@ -73,6 +73,7 @@ export default _defineComponent({
 
       if (typeof generatedSetup?.setupVue2 === 'function') {
         const result = await generatedSetup.setupVue2({
+          app,
           story: props.story,
           variant: props.variant,
         })
@@ -83,6 +84,7 @@ export default _defineComponent({
 
       if (typeof setup?.setupVue2 === 'function') {
         const result = await setup.setupVue2({
+          app,
           story: props.story,
           variant: props.variant,
         })
@@ -93,6 +95,7 @@ export default _defineComponent({
 
       if (typeof props.variant.setupApp === 'function') {
         const result = await props.variant.setupApp({
+          app,
           story: props.story,
           variant: props.variant,
         })

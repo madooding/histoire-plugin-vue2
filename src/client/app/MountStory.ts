@@ -40,6 +40,7 @@ export default _defineComponent({
 
       if (typeof generatedSetup?.setupVue2 === 'function') {
         const result = await generatedSetup.setupVue2({
+          app,
           story: props.story,
           variant: null,
         })
@@ -50,6 +51,7 @@ export default _defineComponent({
 
       if (typeof setup?.setupVue2 === 'function') {
         const result = await setup.setupVue2({
+          app,
           story: props.story,
           variant: null,
         })
