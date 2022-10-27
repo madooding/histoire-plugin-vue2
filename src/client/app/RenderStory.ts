@@ -12,7 +12,7 @@ import {
 } from '@histoire/vendors/vue'
 import { applyState } from '@histoire/shared'
 import type { Story, Variant, PropDefinition, AutoPropComponentDefinition } from '@histoire/shared'
-// import { getTagName } from '../codegen'
+import { getTagName } from '../codegen'
 import { registerGlobalComponents } from './global-components.js'
 import { RouterLinkStub } from './RouterLinkStub'
 // @ts-expect-error virtual module id
@@ -122,22 +122,22 @@ export default _defineComponent({
 
           // Auto detect props
           // @TODO
-          // if (props.slotName === 'default' && !props.variant.autoPropsDisabled) {
-          //   const propsTypes: AutoPropComponentDefinition[] = scanForAutoProps(vnodes)
+          if (props.slotName === 'default' && !props.variant.autoPropsDisabled) {
+            const propsTypes: AutoPropComponentDefinition[] = scanForAutoProps(vnodes)
 
-          //   const snapshot = JSON.stringify(propsTypes)
-          //   if (!lastPropsTypesSnapshot || lastPropsTypesSnapshot !== snapshot) {
-          //     applyState(props.variant.state, {
-          //       _hPropDefs: propsTypes,
-          //     })
-          //     if (!props.variant.state._hPropState) {
-          //       applyState(props.variant.state, {
-          //         _hPropState: {},
-          //       })
-          //     }
-          //     lastPropsTypesSnapshot = snapshot
-          //   }
-          // }
+            const snapshot = JSON.stringify(propsTypes)
+            if (!lastPropsTypesSnapshot || lastPropsTypesSnapshot !== snapshot) {
+              applyState(props.variant.state, {
+                _hPropDefs: propsTypes,
+              })
+              if (!props.variant.state._hPropState) {
+                applyState(props.variant.state, {
+                  _hPropState: {},
+                })
+              }
+              lastPropsTypesSnapshot = snapshot
+            }
+          }
 
           return h('div', vnodes)
         },
@@ -157,72 +157,72 @@ export default _defineComponent({
       emit('ready')
     }
 
-    // function scanForAutoProps (vnodes: any[]) {
-    //   const result: AutoPropComponentDefinition[] = []
-    //   let index = 0
-    //   for (const vnode of vnodes) {
-    //     if (typeof vnode.type === 'object') {
-    //       const propDefs: PropDefinition[] = []
-    //       for (const key in vnode.type.props) {
-    //         const prop = vnode.type.props[key]
-    //         let types
-    //         let defaultValue
-    //         if (prop) {
-    //           const rawTypes = Array.isArray(prop.type) ? prop.type : typeof prop === 'function' ? [prop] : [prop.type]
-    //           types = rawTypes.map(t => {
-    //             switch (t) {
-    //               case String:
-    //                 return 'string'
-    //               case Number:
-    //                 return 'number'
-    //               case Boolean:
-    //                 return 'boolean'
-    //               case Object:
-    //                 return 'object'
-    //               case Array:
-    //                 return 'array'
-    //               default:
-    //                 return 'unknown'
-    //             }
-    //           })
-    //           defaultValue = typeof prop.default === 'function' ? prop.default.toString() : prop.default
-    //         }
-    //         propDefs.push({
-    //           name: key,
-    //           types,
-    //           required: prop?.required,
-    //           default: defaultValue,
-    //         })
+    function scanForAutoProps (vnodes: any[]) {
+      const result: AutoPropComponentDefinition[] = []
+      let index = 0
+      for (const vnode of vnodes) {
+        if (typeof vnode.type === 'object') {
+          const propDefs: PropDefinition[] = []
+          for (const key in vnode.type.props) {
+            const prop = vnode.type.props[key]
+            let types
+            let defaultValue
+            if (prop) {
+              const rawTypes = Array.isArray(prop.type) ? prop.type : typeof prop === 'function' ? [prop] : [prop.type]
+              types = rawTypes.map(t => {
+                switch (t) {
+                  case String:
+                    return 'string'
+                  case Number:
+                    return 'number'
+                  case Boolean:
+                    return 'boolean'
+                  case Object:
+                    return 'object'
+                  case Array:
+                    return 'array'
+                  default:
+                    return 'unknown'
+                }
+              })
+              defaultValue = typeof prop.default === 'function' ? prop.default.toString() : prop.default
+            }
+            propDefs.push({
+              name: key,
+              types,
+              required: prop?.required,
+              default: defaultValue,
+            })
 
-    //         // Props overrides
-    //         if (externalState?._hPropState?.[index]?.[key] != null) {
-    //           if (!vnode.props) {
-    //             vnode.props = {}
-    //           }
-    //           vnode.props[key] = externalState._hPropState[index][key]
-    //           if (!vnode.dynamicProps) {
-    //             vnode.dynamicProps = []
-    //           }
-    //           if (!vnode.dynamicProps.includes(key)) {
-    //             vnode.dynamicProps.push(key)
-    //           }
-    //         }
-    //       }
+            // Props overrides
+            if (externalState?._hPropState?.[index]?.[key] != null) {
+              if (!vnode.props) {
+                vnode.props = {}
+              }
+              vnode.props[key] = externalState._hPropState[index][key]
+              if (!vnode.dynamicProps) {
+                vnode.dynamicProps = []
+              }
+              if (!vnode.dynamicProps.includes(key)) {
+                vnode.dynamicProps.push(key)
+              }
+            }
+          }
 
-    //       result.push({
-    //         name: getTagName(vnode),
-    //         index,
-    //         props: propDefs,
-    //       } as AutoPropComponentDefinition)
-    //       index++
-    //     }
+          result.push({
+            name: getTagName(vnode),
+            index,
+            props: propDefs,
+          } as AutoPropComponentDefinition)
+          index++
+        }
 
-    //     if (Array.isArray(vnode.children)) {
-    //       result.push(...scanForAutoProps(vnode.children))
-    //     }
-    //   }
-    //   return result.filter(def => def.props.length)
-    // }
+        if (Array.isArray(vnode.children)) {
+          result.push(...scanForAutoProps(vnode.children))
+        }
+      }
+      return result.filter(def => def.props.length)
+    }
 
     _onMounted(async () => {
       if (props.variant.configReady) {
