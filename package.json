@@ -1,15 +1,15 @@
 {
-  "name": "@histoire/plugin-vue2",
-  "version": "0.11.6",
+  "name": "@madooding/histoire-plugin-vue2",
+  "version": "0.1.1",
   "description": "Histoire plugin for Vue.js 2 support",
   "license": "MIT",
   "author": {
-    "name": "Guillaume Chau"
+    "name": "madooding"
   },
   "repository": {
-    "url": "https://github.com/Akryum/histoire.git",
+    "url": "https://github.com/madooding/histoire-plugin-vue2.git",
     "type": "git",
-    "directory": "packages/histoire-plugin-vue2"
+    "directory": ""
   },
   "publishConfig": {
     "access": "public"
